@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api'
+  baseURL: 'https://scm-board-api.onrender.com/api'
 });
 
 // 요청 헤더에 JWT 토큰 자동 탑재
