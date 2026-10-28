@@ -7,6 +7,11 @@ const db = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://scm-board.vercel.app' // Vercel 배포 주소 허용
+];
+
 // 미들웨어 등록
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
@@ -26,8 +31,16 @@ app.use('/api/posts', require('./routes/postRoutes'));
 
 // server/src/app.js 상단 CORS 설정
 app.use(cors({
-  origin: true,          // 요청이 들어온 도메인(Vercel 주소 등)을 그대로 자동 승인
-  credentials: true      // 쿠키 및 인증 헤더 전달 허용
+  origin: function (origin, callback) {
+    // 도메인이 없는 요청(Postman, curl 등)이거나 허용 목록에 있으면 허용
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS 정책에 의해 차단되었습니다.'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.listen(PORT, () => {
