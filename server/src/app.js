@@ -24,6 +24,11 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
 
+app.use(cors({
+  origin: '*',
+  credentials: true
+}));
+
 app.listen(PORT, () => {
   console.log(`SCM 문의 게시판 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
 });
